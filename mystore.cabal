@@ -9,5 +9,7 @@ cabal-version:       >=1.10
 
 executable mystore
   main-is:             Main.hs
-  build-depends:       base >=4.10 && <4.11
+  other-modules:       Api
+  build-depends:       base >=4.10 && <4.11, servant-server, text, bytestring
+  hs-source-dirs:      src
   default-language:    Haskell2010
