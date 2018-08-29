@@ -1,15 +1,14 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Api where
+module Api (StoreAPI) where
 
-import Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as B
 import Data.Text
 import Servant
 
 type StoreAPI =
-       Capture "name" Text :> Get
-  :<|> Capture "name" Text :> ReqBody '[OctetStream] ByteString
-  :<|> Capture "name" Text :> Delete
-
-type Name = Text
+       Capture "name" Text :> Get '[OctetStream] B.ByteString
+  -- :<|> Capture "name" Text :> ReqBody '[OctetStream] B.ByteString
+  --                          :> Put '[JSON] ()
+  -- :<|> Capture "name" Text :> Delete '[JSON]

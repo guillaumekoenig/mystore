@@ -4,14 +4,18 @@ let
 
   inherit (nixpkgs) pkgs;
 
-  f = { mkDerivation, base, servant-server, stdenv }:
+  f = { mkDerivation, base, bytestring, servant-server, stdenv
+      , text, wai, warp
+      }:
       mkDerivation {
         pname = "mystore";
         version = "0.1.0.0";
         src = ./.;
         isLibrary = false;
         isExecutable = true;
-        executableHaskellDepends = [ base servant-server ];
+        executableHaskellDepends = [
+          base bytestring servant-server text wai warp
+        ];
         description = "A simple HTTP REST service to store and retrieve files";
         license = stdenv.lib.licenses.unfree;
         hydraPlatforms = stdenv.lib.platforms.none;
