@@ -18,5 +18,6 @@ executable mystore
                      , warp
                      , string-conversions
                      , transformers
+                     , directory
   hs-source-dirs:      src
   default-language:    Haskell2010
