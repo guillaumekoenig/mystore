@@ -10,20 +10,20 @@ import Servant
 import System.Directory (removeFile)
 
 server :: Server StoreAPI
-server = (liftIO . fileGet)
-              -- :<|> (liftIO . filePut)
-              :<|> (liftIO . fileDelete)
+server = getFile :<|> putFile :<|> deleteFile
 
-fileGet :: Text -> IO B.ByteString
-fileGet name = B.readFile (cs name)
+getFile :: Text -> Handler B.ByteString
+getFile name = liftIO $ B.readFile (cs name)
 
--- filePut :: Text -> B.ByteString -> IO ()
--- filePut name contents = B.writeFile (cs name) contents
+putFile :: Text -> B.ByteString -> Handler NoContent
+putFile name contents = do
+  liftIO $ B.writeFile (cs name) contents
+  return NoContent
 
-fileDelete :: Text -> IO NoContent
-fileDelete name = do
-  removeFile (cs name)
-  pure NoContent
+deleteFile :: Text -> Handler NoContent
+deleteFile name = do
+  liftIO $ removeFile (cs name)
+  return NoContent
 
 app :: Application
 app = serve (Proxy :: Proxy StoreAPI) server

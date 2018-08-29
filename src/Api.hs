@@ -9,6 +9,6 @@ import Servant
 
 type StoreAPI =
        Capture "name" Text :> Get '[OctetStream] B.ByteString
-  -- :<|> Capture "name" Text :> ReqBody '[OctetStream] B.ByteString
-  --                          :> Put '[OctetStream] NoContent
+  :<|> Capture "name" Text :> ReqBody '[OctetStream] B.ByteString
+                           :> Put '[OctetStream] NoContent
   :<|> Capture "name" Text :> Delete '[OctetStream] NoContent
