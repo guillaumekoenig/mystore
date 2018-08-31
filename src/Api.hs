@@ -42,5 +42,8 @@ mapFsErr :: IO a -> Handler a
 mapFsErr ioaction = do
   r <- liftIO $ try $ ioaction
   case r of
-    Left e -> Handler $ (throwE $ err404 {errBody = cs $ ioe_description e})
-    Right contents -> return contents
+    Left (e@IOError { ioe_errno = Just 2 }) -- No such file or directory
+      -> Handler (throwE $ err404 {errBody = cs $ ioe_description e})
+    Left e                      -- Other filesystem errors
+      -> Handler (throwE $ err500 {errBody = cs $ ioe_description e})
+    Right val -> return val
