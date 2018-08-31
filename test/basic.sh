@@ -6,6 +6,10 @@ get() {
     curl -s -o /dev/null -w %{http_code} $server$1
 }
 
+get_contents() {
+    curl -s $server$1
+}
+
 put() {
     curl -s -o /dev/null -w %{http_code} \
 	 -X PUT \
@@ -18,15 +22,25 @@ delete() {
 	 -X DELETE $server$1
 }
 
+globalret=0
 assert_eq() {
-    echo -n $1 $2...\ 
+    echo -n $1 $2...' '
     r=$(eval $1)
-    [ $r -eq $2 ] && echo "ok" || echo "FAIL"
+    [ $r -eq $2 ] && echo "ok" || { echo "FAIL"; globalret=1; }
 }
 
-assert_eq "get /basic.sh" 500	# fixme
+assert_contents() {
+    echo -n $1 == $2...' '
+    $(cmp <(eval $1) <(eval $2)) && echo "ok" \
+            || { echo "FAIL"; globalret=1; }
+}
+
+assert_eq "get /basic.sh" 404
 assert_eq "put $0 /basic.sh" 200
-# todo check content
+assert_eq "get /basic.sh" 200
+assert_contents "get_contents /basic.sh" "cat $0"
 assert_eq "delete /basic.sh" 200
-assert_eq "delete /basic.sh" 500 # fixme
-assert_eq "get /basic.sh" 500 	# fixme
+assert_eq "delete /basic.sh" 404
+assert_eq "get /basic.sh" 404
+
+exit $globalret
