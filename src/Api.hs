@@ -3,10 +3,13 @@
 
 module Api (api, server) where
 
+import Control.Exception (try)
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Except (throwE)
 import qualified Data.ByteString.Char8 as B
 import Data.String.Conversions (cs)
 import Data.Text (Text)
+import GHC.IO.Exception (IOException(..))
 import Servant
 import System.Directory (removeFile)
 
@@ -23,14 +26,21 @@ server :: Server StoreAPI
 server = getFile :<|> putFile :<|> deleteFile
 
 getFile :: Text -> Handler B.ByteString
-getFile name = liftIO $ B.readFile (cs name)
+getFile name = mapFsErr $ B.readFile (cs name)
 
 putFile :: Text -> B.ByteString -> Handler NoContent
-putFile name contents = do
-  liftIO $ B.writeFile (cs name) contents
+putFile name contents = mapFsErr $ do
+  B.writeFile (cs name) contents
   return NoContent
 
 deleteFile :: Text -> Handler NoContent
-deleteFile name = do
-  liftIO $ removeFile (cs name)
+deleteFile name = mapFsErr $ do
+  removeFile (cs name)
   return NoContent
+
+mapFsErr :: IO a -> Handler a
+mapFsErr ioaction = do
+  r <- liftIO $ try $ ioaction
+  case r of
+    Left e -> Handler $ (throwE $ err404 {errBody = cs $ ioe_description e})
+    Right contents -> return contents
