@@ -4,8 +4,9 @@ let
 
   inherit (nixpkgs) pkgs;
 
-  f = { mkDerivation, base, bytestring, directory, servant-server
-      , stdenv, string-conversions, text, transformers, wai, warp
+  f = { mkDerivation, base, bytestring, directory, optparse-generic
+      , servant-server, stdenv, string-conversions, text, transformers
+      , wai, warp
       }:
       mkDerivation {
         pname = "mystore";
@@ -14,8 +15,8 @@ let
         isLibrary = false;
         isExecutable = true;
         executableHaskellDepends = [
-          base bytestring directory servant-server string-conversions text
-          transformers wai warp
+          base bytestring directory optparse-generic servant-server
+          string-conversions text transformers wai warp
         ];
         description = "A simple HTTP REST service to store and retrieve files";
         license = stdenv.lib.licenses.bsd3;

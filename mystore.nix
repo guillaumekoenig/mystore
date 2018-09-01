@@ -18,7 +18,7 @@ with lib;
       port = mkOption {
         type = types.ints.u16;
         default = 8081;
-        description = "Port to listen requests on.";
+        description = "Port to serve requests on.";
       };
       folder = mkOption {
         type = types.path;
@@ -30,7 +30,7 @@ with lib;
     systemd.services.mystore = {
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      description = "Start the mystore service.";
+      description = "mystore service";
       serviceConfig = {
         ExecStart = ''
           ${mystore}/bin/mystore ${(toString cfg.port)} ${cfg.folder}
