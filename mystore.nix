@@ -2,7 +2,10 @@
 
 let
   cfg = config.services.mystore;
+  mystore = pkgs.callPackage ./shell.nix {};
 in
+
+with lib;
 
 {
   options = {
@@ -23,14 +26,14 @@ in
       };
     };
   };
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     systemd.services.mystore = {
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       description = "Start the mystore service.";
       serviceConfig = {
         ExecStart = ''
-          ${mystore}/bin/mystore ${cfg.port} ${cfg.folder}
+          ${mystore}/bin/mystore ${(toString cfg.port)} ${cfg.folder}
         '';
       };
     };

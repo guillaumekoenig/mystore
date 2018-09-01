@@ -1,10 +1,13 @@
 name:                mystore
 version:             0.1.0.0
 synopsis:            A simple HTTP REST service to store and retrieve files
+license:             BSD3
+license-file:        LICENSE
 author:              Guillaume Koenig
 maintainer:          guillaume.edward.koenig@gmail.com
 category:            Web
 build-type:          Simple
+extra-source-files:  README.md
 cabal-version:       >=1.10
 
 executable mystore

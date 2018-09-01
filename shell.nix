@@ -18,8 +18,7 @@ let
           transformers wai warp
         ];
         description = "A simple HTTP REST service to store and retrieve files";
-        license = stdenv.lib.licenses.unfree;
-        hydraPlatforms = stdenv.lib.platforms.none;
+        license = stdenv.lib.licenses.bsd3;
       };
 
   haskellPackages = if compiler == "default"
