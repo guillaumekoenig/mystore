@@ -1,4 +1,5 @@
-test pass shellcheck on it
-add comments and documentation
 The NIXOS MODULE! (+server conf!)
+hardlink to save files ?
+pass shellcheck on basic.sh
+add comments and documentation
 write this readme
