@@ -9,6 +9,7 @@ module Main where
 
 import Api (api, server)
 import Network.Wai.Handler.Warp (run)
+import Network.Wai.Middleware.RequestLogger (logStdout)
 import Options.Generic
 import Servant (serve)
 import System.Directory (setCurrentDirectory)
@@ -27,4 +28,4 @@ main = do
   setCurrentDirectory (folder config)
   putStrLn $ "Serving \"" ++ folder config
     ++ "\" on :" ++ show (port config)
-  run (port config) (serve api server)
+  run (port config) $ logStdout (serve api server)

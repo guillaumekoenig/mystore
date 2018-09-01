@@ -18,6 +18,7 @@ executable mystore
                      , text
                      , bytestring
                      , wai
+                     , wai-extra
                      , warp
                      , string-conversions
                      , transformers

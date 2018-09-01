@@ -6,7 +6,7 @@ let
 
   f = { mkDerivation, base, bytestring, directory, optparse-generic
       , servant-server, stdenv, string-conversions, text, transformers
-      , wai, warp
+      , wai, wai-extra, warp
       }:
       mkDerivation {
         pname = "mystore";
@@ -16,7 +16,7 @@ let
         isExecutable = true;
         executableHaskellDepends = [
           base bytestring directory optparse-generic servant-server
-          string-conversions text transformers wai warp
+          string-conversions text transformers wai wai-extra warp
         ];
         description = "A simple HTTP REST service to store and retrieve files";
         license = stdenv.lib.licenses.bsd3;
