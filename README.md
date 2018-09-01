@@ -1,5 +1,14 @@
-The NIXOS MODULE! (+server conf!)
 hardlink to save files ?
 pass shellcheck on basic.sh
 add comments and documentation
 write this readme
+
+Add mystore.nix's full path to the imports of configuration.nix,
+then activate the service :
+
+```
+services.mystore.enable = true;
+services.mystore.folder = "/home/mystore";
+services.mystore.user = "mystore";
+users.users.mystore = { createHome = true; home = "/home/mystore"; };
+```

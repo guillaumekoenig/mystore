@@ -2,7 +2,7 @@
 
 let
   cfg = config.services.mystore;
-  mystore = pkgs.callPackage ./shell.nix {};
+  mystore = pkgs.callPackage ./default.nix {};
 in
 
 with lib;
@@ -24,6 +24,13 @@ with lib;
         type = types.path;
         description = "Folder to serve.";
       };
+      user = mkOption {
+        type = types.string;
+        description = ''
+          User to run service with. Avoid root; prefer user
+          with isolated rights on folder to serve.
+        '';
+      };
     };
   };
   config = mkIf cfg.enable {
@@ -33,8 +40,11 @@ with lib;
       description = "mystore service";
       serviceConfig = {
         ExecStart = ''
-          ${mystore}/bin/mystore ${(toString cfg.port)} ${cfg.folder}
+          ${mystore}/bin/mystore \
+            --port ${(toString cfg.port)} \
+            --folder ${cfg.folder}
         '';
+        User = "${cfg.user}";
       };
     };
   };
