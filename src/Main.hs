@@ -14,6 +14,7 @@ import Options.Generic
 import Servant (serve)
 import System.Directory (setCurrentDirectory)
 
+-- | Command-line options
 data Config w = Config
   { port :: w ::: Int <?> "Port to serve requests on"
   , folder :: w ::: String <?> "Folder to serve"
