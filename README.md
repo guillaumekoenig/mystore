@@ -1,5 +1,4 @@
 hardlink to save files ?
-pass shellcheck on basic.sh
 write this readme
 
 Add mystore.nix's full path to the imports of configuration.nix,
