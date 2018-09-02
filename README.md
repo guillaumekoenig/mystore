@@ -109,3 +109,62 @@ There is testing of the API in `test/basic.sh`. It assumes an empty
 mystore instance is running on port 8081. The script will try to
 upload itself to the service, and check that retrieval and removal are
 working as expected.
+
+## Limitations
+
+There are a lot of aspects that makes this program a contrived
+example.
+
+### No user identification
+
+Users can overwrite each other's files; two users can write different
+contents to the same name. A simple alternative would be to return 409
+CONFLICT for upload to an existing name (making contents immutable).
+
+More general solutions would require user authentication to identify
+who can get and delete which resources. Delete could be exclusive to a
+system user that garbage collects files not retrieved in a long time.
+
+### Race conditions
+
+The current implementation does not prevent races at the filesystem
+level : two users may be writing to the same resource _at the same
+time_, resulting in mixed contents.
+
+### Deduplication of contents
+
+We may want to deduplicate same contents for storage efficiency. For
+example several users could be uploading the same picture under
+different names.
+
+Deduplication could be done on upload. We maintain a map of existing
+file hashes, and if the contents already exist, hardlink the new name
+to existing name (they will have the same inode number, hence sharing
+the same blocks on disk). Concurrent access to the map must be dealt
+with carefully. Hash collisions must be dealt with (maybe by also
+checking the file).
+
+Instead of identifying duplicates on insertion, this can be a seperate
+process running at certain times. Saving space by hardlinking files
+with same contents is the scheme employed by `nix-store --optimize`.
+
+### Content addressable scheme
+
+Instead of letting the user pick up a name, we can instead generate
+one on upload (which would then be made through POST instead of PUT)
+and return it in the response body.
+
+Picking a naming scheme based on a hash of the contents allows for
+easier deduplication.
+
+### Performance
+
+Having more and more files in a single directory will eventually
+hinder performance. Directory entries of a directory are not sorted,
+meaning linear lookup time on the number of entries.
+
+One way to address the problem is to create a folder hierarchy. This
+is the scheme employed by git to store its objects. Each folder of the
+first level groups together names beginning with the same byte.
+Instead of n lookups, we are down to 256+(n/256) on average. With more
+levels, we are closer to logarithmic lookup time.
